@@ -9,14 +9,57 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+For project 1, we decide to explore employment rates and salaries for college graduates based on majors. We used data provided by fivethirdyeight package as well as survey from the Federal Reserve.
 
 ```{r dataset}
 library(fivethirtyeight)
+library(ggplot2)
+library(readr)
+library(dplyr)
+library(forcats)
+library(ggthemes)
+theme_set(theme_fivethirtyeight())
+theme_update(plot.title = element_text(hjust = 0.5))
+```
+
+
+```{r data_wrangling}
 college <- data.frame(college_recent_grads)
+
 college_fed <- read_csv("~/stat041/labs/stat041_p1_grp14/labor-market-for-recent-college-grads.csv")
+college_fed <- college_fed[1:74,]
+overall_fed <- college_fed[74,]
+college_fed <- college_fed[-74,]
+college.join <- inner_join(college_fed,college,by = c("Major" = "major"))
+```
+
+```{r visualization}
+#Instruction source: https://rstudio-pubs-static.s3.amazonaws.com/7433_4537ea5073dc4162950abb715f513469.html
+college.join$Major<- factor(college.join$Major,levels = college.join$Major[order(college.join$`Unemployment Rate`)])
+
+par(mar=c(6,6,6,3)+.1)
+ggplot(college.join) + 
+  geom_col(mapping = aes(Major,`unemployment_rate`*100), alpha = 0.2, fill = "orange", color = FALSE, width = 0.8) +
+  geom_col(mapping = aes(Major,`Unemployment Rate`), alpha = 0.6, fill = "midnightblue", color = FALSE, width = 0.8) + 
+  coord_flip() + 
+  labs(y = "Unemployment Rate (%)", x = "Undergraduate Major", title = "Unemployment Rate by College Major") +
+  theme(axis.text.x = element_text(angle = 0, vjust = 1 , hjust = 1), 
+        axis.line.x = element_line(colour = "grey80"), 
+        axis.title = element_text(size = 10), 
+        axis.text = element_text(size = 8), 
+        title = element_text(size = 12)
+  )
+
+ggplot(college.join) + 
+  geom_col(mapping = aes(Major,(`Median Wage Mid-Career` - `Median Wage Early Career`)/`Median Wage Early Career`*100), alpha = 0.2, fill = "green", color = FALSE, width = 0.8) +
+  geom_col(mapping = aes(Major,`Unemployment Rate`), alpha = 0.6, fill = "midnightblue", color = FALSE, width = 0.8) + 
+  coord_flip() + 
+  labs(y = "Unemployment Rate (%)", x = "Undergraduate Major", title = "Unemployment vs. Wage Growth") +
+  theme(axis.text.x = element_text(angle = 0, vjust = 1 , hjust = 1), 
+        axis.line.x = element_line(colour = "grey80"), 
+        axis.title = element_text(size = 10), 
+        axis.text = element_text(size = 8), 
+        title = element_text(size = 9)
+  )
+
 ```
