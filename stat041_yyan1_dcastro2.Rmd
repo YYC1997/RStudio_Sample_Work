@@ -26,11 +26,14 @@ theme_update(plot.title = element_text(hjust = 0.5))
 ```{r data_wrangling}
 college <- data.frame(college_recent_grads)
 
-college_fed <- read_csv("~/stat041/labs/stat041_p1_grp14/labor-market-for-recent-college-grads.csv")
+#Dalia's code works with this: ~/Labs/stat041_p1_grp14/labor-market-for-recent-college-grads.csv
+college_fed <- read_csv("~/Labs/stat041_p1_grp14/labor-market-for-recent-college-grads.csv")
 college_fed <- college_fed[1:74,]
 overall_fed <- college_fed[74,]
 college_fed <- college_fed[-74,]
 college.join <- inner_join(college_fed,college,by = c("Major" = "major"))
+
+
 ```
 
 ```{r visualization}
@@ -57,9 +60,28 @@ ggplot(college.join) +
   labs(y = "Unemployment Rate (%)", x = "Undergraduate Major", title = "Unemployment vs. Wage Growth") +
   theme(axis.text.x = element_text(angle = 0, vjust = 1 , hjust = 1), 
         axis.line.x = element_line(colour = "grey80"), 
-        axis.title = element_text(size = 10), 
-        axis.text = element_text(size = 8), 
+        axis.title = element_text(size = 12), 
+        axis.text = element_text(size = 12), 
         title = element_text(size = 9)
   )
 
+ college.join$Major<- factor(college.join$Major,levels = college.join$Major[order(college.join$sharewomen)])
+
+
+ggplot(college.join, mapping = aes(x = sharewomen*100, y = Major)) + geom_point() + labs(y = "Major", x = "Share of Women (%)", title = "Share of Women in Each Major") + theme(axis.text.x = element_text(angle = 0, vjust = 1 , hjust = 1), 
+        axis.line.x = element_line(colour = "black"), 
+        axis.title = element_text(size = 12), 
+        axis.text = element_text(size = 12), 
+        title = element_text(size = 9)
+        
+)
+
+#select(college.join, contains("major"))
+#Questions for Prof
+#What is interactive style
+#Are the way that the graphs are made/merged alright?
+
+#to rejoin majors we want again in the new innerjoin = mutate(majors_new, recode('econ' = "economics"))
+
+#information on two axis https://rpubs.com/MarkusLoew/226759
 ```
