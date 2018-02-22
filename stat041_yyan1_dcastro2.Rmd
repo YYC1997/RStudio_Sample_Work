@@ -32,7 +32,7 @@ font_install(fontpkg='fontcm',prompt=TRUE)
 college <- data.frame(college_recent_grads)
 
 #Dalia's code works with this: ~/Labs/stat041_p1_grp14/labor-market-for-recent-college-grads.csv
-college_fed <- read_csv("~/Labs/stat041_p1_grp14/labor-market-for-recent-college-grads.csv")
+college_fed <- read_csv("~/stat041/labs/stat041_p1_grp14/labor-market-for-recent-college-grads.csv")
 college_fed <- college_fed[1:74,]
 overall_fed <- college_fed[74,]
 college_fed <- college_fed[-74,]
@@ -59,17 +59,6 @@ college.join$Major[college.join$Major == "Engineering Technologies"] <- "Engin. 
 college.join$Major[college.join$Major == "General Social Sciences"] <- "Gen. Social Sciences"
 
 
-
-
-
-
-
-
-
-
-
-
-
 ```
 
 ```{r visualization}
@@ -85,27 +74,32 @@ ggplot(college.join) +
   theme(axis.text.x = element_text(angle = 0, vjust = 1 , hjust = 1), 
         axis.line.x = element_line(colour = "grey80"), 
         axis.title = element_text(size = 10), 
-        axis.text = element_text(size = 8), 
+        axis.text = element_text(size = 9), 
         title = element_text(size = 12)
   )
 
-ggplot(college.join) + 
-  geom_col(mapping = aes(Major,(`Median Wage Mid-Career` - `Median Wage Early Career`)/`Median Wage Early Career`*100), alpha = 0.2, fill = "green", color = FALSE, width = 0.8) +
-  geom_col(mapping = aes(Major,`Unemployment Rate`), alpha = 0.6, fill = "midnightblue", color = FALSE, width = 0.8) + 
+#Instruction source: https://rstudio-pubs-static.s3.amazonaws.com/7433_4537ea5073dc4162950abb715f513469.html
+college.join$Major<- factor(college.join$Major,levels = college.join$Major[order(college.join$`Unemployment Rate`)])
+
+ggplot(college.join, aes(x = Major)) + 
+  geom_col(mapping = aes(y = (`Median Wage Mid-Career` - `Median Wage Early Career`)/`Median Wage Early Career`*100), alpha = 0.2, fill = "midnightblue", color = FALSE, width = 0.8) +
+  geom_col(mapping = aes(y = `Unemployment Rate`*5), alpha = 0.6, fill = "firebrick1", color = FALSE, width = 0.8) + 
   coord_flip() + 
-  labs(y = "Unemployment Rate (%)", x = "Undergraduate Major", title = "Unemployment vs. Wage Growth") +
+  labs(y = "Wage Growth [%]", x = "Undergraduate Major", title = "Unemployment vs. Wage Growth") +
+  #used double axis labeling technique from https://rpubs.com/MarkusLoew/226759
+  scale_y_continuous(limits = c(0, 100), sec.axis = sec_axis(~.*.20, name = "Unemployment Rate [%]")) + 
   theme(axis.text.x = element_text(angle = 0, vjust = 1 , hjust = 1), 
         axis.line.x = element_line(colour = "grey80"), 
-        axis.title = element_text(size = 12, color = "aquamarine3"), 
-        axis.text = element_text(size = 12), 
-        title = element_text(size = 9, color = "aquamarine3")
+        axis.title = element_text(size = 14, color = "dodgerblue3"), 
+        axis.text = element_text(size = 9), 
+        title = element_text(size = 15, color = "aquamarine3")
   )
 
 #share of women per major graph
  college.join$Major<- factor(college.join$Major,levels = college.join$Major[order(college.join$sharewomen)])
 
 
-ggplot(college.join, mapping = aes(y = sharewomen*100, x = Major)) + geom_col(color = "lightslateblue") + labs(y = "Major", x = "Share of Women (%)", title = "Share of Women in Each Major") + coord_flip() +
+ggplot(college.join, mapping = aes(y = sharewomen*100, x = Major)) + geom_col(color = "lightslateblue", alpha = 0.6) + labs(y = "Major", x = "Share of Women (%)", title = "Share of Women in Each Major") + coord_flip() +
         theme(axis.text.x = element_text(angle = 0, vjust = 1 , hjust = 1), 
         axis.line.x = element_line(colour = "black"), 
         axis.title = element_text(size = 12), 
