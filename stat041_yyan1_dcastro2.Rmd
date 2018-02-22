@@ -18,8 +18,11 @@ library(readr)
 library(dplyr)
 library(forcats)
 library(ggthemes)
+library(fontcm)
+library(extrafont)
 theme_set(theme_fivethirtyeight())
 theme_update(plot.title = element_text(hjust = 0.5))
+font_install(fontpkg='fontcm',prompt=TRUE)
 
 # Edit to demonstrate how github does things -- Emma
 ```
@@ -34,6 +37,37 @@ college_fed <- college_fed[1:74,]
 overall_fed <- college_fed[74,]
 college_fed <- college_fed[-74,]
 college.join <- inner_join(college_fed,college,by = c("Major" = "major"))
+
+#filter names of ed, misc, 
+
+college.join$Major[college.join$Major == "Early Childhood Education"] <- "Early Childhood Ed."
+college.join$Major[college.join$Major == "Elementary Education"] <- "Elementary Ed."
+college.join$Major[college.join$Major == "General Education"] <- "Gen Ed."
+college.join$Major[college.join$Major == "Miscellaneous Education"] <- "Misc. Ed."
+college.join$Major[college.join$Major == "General Social Science"] <- "Gen. Social Science"
+college.join$Major[college.join$Major == "Electrical Engineering"] <- "Electrical Engin."
+college.join$Major[college.join$Major == "General Business"] <- "Gen. Business"
+college.join$Major[college.join$Major == "Construction Services"] <- "Construction Serv."
+college.join$Major[college.join$Major == "Chemical Engineering"] <- "Chemical Engin."
+college.join$Major[college.join$Major == "General Engineering"] <- "Gen. Engin."
+college.join$Major[college.join$Major == "Civil Engineering"] <- "Civil Engin."
+college.join$Major[college.join$Major == "Computer Engineering"] <- "Computer Engin."
+college.join$Major[college.join$Major == "Aerospace Engineering"] <- "Aerospace Engin."
+college.join$Major[college.join$Major == "Miscellaneous Engineering"] <- "Misc. Engin."
+college.join$Major[college.join$Major == "Mechanical Engineering"] <- "Mechanical Engin."
+college.join$Major[college.join$Major == "Engineering Technologies"] <- "Engin. Tech."
+college.join$Major[college.join$Major == "General Social Sciences"] <- "Gen. Social Sciences"
+
+
+
+
+
+
+
+
+
+
+
 
 
 ```
@@ -69,14 +103,20 @@ ggplot(college.join) +
 
  college.join$Major<- factor(college.join$Major,levels = college.join$Major[order(college.join$sharewomen)])
 
-
-ggplot(college.join, mapping = aes(x = sharewomen*100, y = Major)) + geom_point() + labs(y = "Major", x = "Share of Women (%)", title = "Share of Women in Each Major") + theme(axis.text.x = element_text(angle = 0, vjust = 1 , hjust = 1), 
+ loadfonts()
+pdf("ggplot_cm.pdf")
+ 
+ggplot(college.join, mapping = aes(x = sharewomen*100, y = Major)) + geom_point(color = "purple") + labs(y = "Major", x = "Share of Women (%)", title = "Share of Women in Each Major") + theme(axis.text.x = element_text(angle = 0, vjust = 1 , hjust = 1), 
         axis.line.x = element_line(colour = "black"), 
         axis.title = element_text(size = 12), 
         axis.text = element_text(size = 12), 
-        title = element_text(size = 9)
+        title = element_text(size = 15, color = "aquamarine3"),
+        axis.title.x = element_text(size = 12, colour = "darkviolet"),
+        axis.title.y = element_text(size = 12, colour = "goldenrod3")
         
 )
+
+
 
 #select(college.join, contains("major"))
 #Questions for Prof
