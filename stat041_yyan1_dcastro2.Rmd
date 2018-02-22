@@ -20,6 +20,8 @@ library(forcats)
 library(ggthemes)
 theme_set(theme_fivethirtyeight())
 theme_update(plot.title = element_text(hjust = 0.5))
+
+# Edit to demonstrate how github does things -- Emma
 ```
 
 
