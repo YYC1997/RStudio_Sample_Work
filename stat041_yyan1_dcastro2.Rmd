@@ -96,27 +96,40 @@ ggplot(college.join) +
   labs(y = "Unemployment Rate (%)", x = "Undergraduate Major", title = "Unemployment vs. Wage Growth") +
   theme(axis.text.x = element_text(angle = 0, vjust = 1 , hjust = 1), 
         axis.line.x = element_line(colour = "grey80"), 
-        axis.title = element_text(size = 12), 
+        axis.title = element_text(size = 12, color = "aquamarine3"), 
         axis.text = element_text(size = 12), 
-        title = element_text(size = 9)
+        title = element_text(size = 9, color = "aquamarine3")
   )
 
+#share of women per major graph
  college.join$Major<- factor(college.join$Major,levels = college.join$Major[order(college.join$sharewomen)])
 
- loadfonts()
-pdf("ggplot_cm.pdf")
- 
-ggplot(college.join, mapping = aes(x = sharewomen*100, y = Major)) + geom_point(color = "purple") + labs(y = "Major", x = "Share of Women (%)", title = "Share of Women in Each Major") + theme(axis.text.x = element_text(angle = 0, vjust = 1 , hjust = 1), 
+
+ggplot(college.join, mapping = aes(y = sharewomen*100, x = Major)) + geom_col(color = "lightslateblue") + labs(y = "Major", x = "Share of Women (%)", title = "Share of Women in Each Major") + coord_flip() +
+        theme(axis.text.x = element_text(angle = 0, vjust = 1 , hjust = 1), 
         axis.line.x = element_line(colour = "black"), 
         axis.title = element_text(size = 12), 
         axis.text = element_text(size = 12), 
         title = element_text(size = 15, color = "aquamarine3"),
-        axis.title.x = element_text(size = 12, colour = "darkviolet"),
-        axis.title.y = element_text(size = 12, colour = "goldenrod3")
-        
+        axis.title.x = element_text(size = 14, colour = "mediumorchid3"),
+        axis.title.y = element_text(size = 14, colour = "mediumorchid3")
 )
 
+#select(college.join, contains("women"))
 
+#share of women per major graph plot
+ college.join$Major<- factor(college.join$Major,levels = college.join$Major[order(college.join$sharewomen)])
+
+
+ggplot(college.join, mapping = aes(x = sharewomen*100, y = Major)) + geom_point(color = "royalblue3") + labs(y = "Major", x = "Share of Women (%)", title = "Share of Women in Each Major") + theme(axis.text.x = element_text(angle = 0, vjust = 1 , hjust = 1), 
+        axis.line.x = element_line(colour = "black"), 
+        axis.title = element_text(size = 12), 
+        axis.text = element_text(size = 12), 
+        title = element_text(size = 15, color = "aquamarine3"),
+        axis.title.x = element_text(size = 14, colour = "mediumorchid3"),
+        axis.title.y = element_text(size = 14, colour = "mediumorchid3")
+        
+)
 
 #select(college.join, contains("major"))
 #Questions for Prof
