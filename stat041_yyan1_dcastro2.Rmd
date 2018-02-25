@@ -1,6 +1,6 @@
 ---
-title: "stat041_yyan1_dcastro2"
-author: "Yichuan Yan"
+title: "MiniProject1: Salary Returns to College Grads"
+author: "Dalia Castro and Yichuan Yan"
 date: "2/9/2018"
 output: html_document
 ---
@@ -9,9 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-For project 1, we decide to explore employment rates and salaries for college graduates based on majors. We used data provided by fivethirdyeight package as well as survey from the Federal Reserve.
-
-```{r dataset}
+```{r dataset, echo = FALSE, include = FALSE}
 library(fivethirtyeight)
 library(ggplot2)
 library(readr)
@@ -22,17 +20,15 @@ library(fontcm)
 library(extrafont)
 theme_set(theme_fivethirtyeight())
 theme_update(plot.title = element_text(hjust = 0.5))
-font_install(fontpkg='fontcm',prompt=TRUE)
 
-# Edit to demonstrate how github does things -- Emma
 ```
 
 
-```{r data_wrangling}
+```{r data_wrangling, echo = FALSE, include = FALSE}
 college <- data.frame(college_recent_grads)
 
 #Dalia's code works with this: ~/Labs/stat041_p1_grp14/labor-market-for-recent-college-grads.csv
-college_fed <- read_csv("~/stat041/labs/stat041_p1_grp14/labor-market-for-recent-college-grads.csv")
+college_fed <- read_csv("~/Labs/stat041_p1_grp14/labor-market-for-recent-college-grads.csv")
 college_fed <- college_fed[1:74,]
 overall_fed <- college_fed[74,]
 college_fed <- college_fed[-74,]
@@ -61,22 +57,37 @@ college.join$Major[college.join$Major == "General Social Sciences"] <- "Gen. Soc
 
 ```
 
-```{r visualization}
+###Introduction
+
+ Here at Swarthmore College the sophomore plan, the short statement declaring a major/minor choice, for the class of 2020 was recently due. For some, this plan showcases their meticulously thought-out life decision to pursue a career in finance, pre-med, or the like. Meanwhile, for many previously undeclared and unapologetically curious, the clock has struck midnight. The time to choose a path in life has arrived. 
+
+ For those who satisfy the latter group, making the decision at this time in their college career entails confronting the questions they have postponed until now. These questions include, but are not limited to: What do I want? Who am I and how can I get there? Will I be able to feed myself if I major in this or that? Do I really want to study a major which guarantees a high income? Considering that we cannot give a straightforward answer to the former two questions, the emphasis of this blogpost will tackle the last two questions, questions that all college students tend to ask themselves at some point in time. In order to analyze these questions, we have recruited the help from the US Census Bureau’s American Community Survey and the New York Federal Reserve’s data on recent college graduates.
+
+###Recent Graduate Unemployment
+
+In the graph above we look at graduation unemployment rate vs. wage growth. Wage growth is represented through the difference between entry level and mid-career wages. Just because unemployment rate for recent grads is low doesn’t mean that there will be small returns. For example, biology majors usually do not go directly into the workforce, leading to a relatively high unemployment rate. However, most of the biology majors end up becoming doctor after attending medical school. Similarly, architecture majors will need to wait for 5 years before they could obtain their practicing license from the NCARB.
+
+We want to highlight this finding because many people worry about their majors not leading to good employment right after graduation. However, the data here shows that wage growth should also be something that we should take into consideration. Studies have shown that parents have played a huge role in selecting universities and majors for their children (George-Jackson 2010). Before making decisions for their children, it would be important to look beyond the unemployment numbers.
+
+```{r visualization, echo = FALSE}
 #Instruction source: https://rstudio-pubs-static.s3.amazonaws.com/7433_4537ea5073dc4162950abb715f513469.html
 college.join$Major<- factor(college.join$Major,levels = college.join$Major[order(college.join$`Unemployment Rate`)])
 
 par(mar=c(6,6,6,3)+.1)
-ggplot(college.join) + 
-  geom_col(mapping = aes(Major,`unemployment_rate`*100), alpha = 0.2, fill = "orange", color = FALSE, width = 0.8) +
-  geom_col(mapping = aes(Major,`Unemployment Rate`), alpha = 0.6, fill = "midnightblue", color = FALSE, width = 0.8) + 
-  coord_flip() + 
-  labs(y = "Unemployment Rate (%)", x = "Undergraduate Major", title = "Unemployment Rate by College Major") +
-  theme(axis.text.x = element_text(angle = 0, vjust = 1 , hjust = 1), 
-        axis.line.x = element_line(colour = "grey80"), 
-        axis.title = element_text(size = 10), 
-        axis.text = element_text(size = 9), 
-        title = element_text(size = 12)
-  )
+#ggplot(college.join) + 
+#  geom_col(mapping = aes(Major,`unemployment_rate`*100), alpha = 0.2, fill = "orange", color = FALSE, width = 0.8) +#  geom_col(mapping = aes(Major,`Unemployment Rate`), alpha = 0.6, fill = "midnightblue", color = FALSE, width = 0.8) + 
+#  coord_flip() + 
+#  labs(y = "Unemployment Rate (%)", x = "Undergraduate Major", title = "Unemployment Rate by College Major") +
+#  theme(axis.text.x = element_text(angle = 0, vjust = 1 , hjust = 1), 
+#        axis.line.x = element_line(colour = "grey80"), 
+#        axis.title = element_text(size = 10), 
+#       axis.text = element_text(size = 9), 
+#        title = element_text(size = 12)
+#  )
+
+#we decided not to include the above graph. 
+
+#Yichuan's Graph
 
 #Instruction source: https://rstudio-pubs-static.s3.amazonaws.com/7433_4537ea5073dc4162950abb715f513469.html
 college.join$Major<- factor(college.join$Major,levels = college.join$Major[order(college.join$`Unemployment Rate`)])
@@ -85,7 +96,7 @@ ggplot(college.join, aes(x = Major)) +
   geom_col(mapping = aes(y = (`Median Wage Mid-Career` - `Median Wage Early Career`)/`Median Wage Early Career`*100), alpha = 0.2, fill = "midnightblue", color = FALSE, width = 0.8) +
   geom_col(mapping = aes(y = `Unemployment Rate`*5), alpha = 0.6, fill = "firebrick1", color = FALSE, width = 0.8) + 
   coord_flip() + 
-  labs(y = "Wage Growth [%]", x = "Undergraduate Major", title = "Unemployment vs. Wage Growth") +
+  labs(y = "Wage Growth (%)", x = "Undergraduate Major", title = "Unemployment vs. Wage Growth") +
   #used double axis labeling technique from https://rpubs.com/MarkusLoew/226759
   scale_y_continuous(limits = c(0, 100), sec.axis = sec_axis(~.*.20, name = "Unemployment Rate [%]")) + 
   theme(axis.text.x = element_text(angle = 0, vjust = 1 , hjust = 1), 
@@ -94,12 +105,23 @@ ggplot(college.join, aes(x = Major)) +
         axis.text = element_text(size = 9), 
         title = element_text(size = 15, color = "aquamarine3")
   )
+```
+
+![Source: New York Federal Reserve & U.S. Census Bureau]
+
+
+###Opportunity Outcomes for Women
+
+Given that there are particular majors that seem to guarantee a good life overall, one has to wonder - does everybody have access to the same kind of economic opportunity? In terms of gender distribution, not all majors are created equal. The plot above showcases what seems to be an amalgam of women in education and social science degrees in contrast with the minimal representation in engineering degrees. How can we explain this given that gender ratio for college enrollment has leveled off since the early 2000’s (Economic Policy Institute 2016)? There are a few hypothesis to this question. First, throughout their academic life women are conditioned to believe that they are not intelligent, confident enough to pursue a degree in high return majors, particularly STEM.  And two, women continue to be underrepresented in certain majors because they take note that there is low representation and are afraid of feeling unwelcome. 
+
+```{r echo = FALSE}
+#Dalia's Graph
 
 #share of women per major graph
  college.join$Major<- factor(college.join$Major,levels = college.join$Major[order(college.join$sharewomen)])
 
 
-ggplot(college.join, mapping = aes(y = sharewomen*100, x = Major)) + geom_col(color = "lightslateblue", alpha = 0.6) + labs(y = "Major", x = "Share of Women (%)", title = "Share of Women in Each Major") + coord_flip() +
+ggplot(college.join, mapping = aes( x = Major,y = `sharewomen`*100)) + geom_col( alpha = 0.6, fill = "slateblue") + labs( y = "Share of Women (%)", x = "Major", title = "Share of Women in Each Major") + coord_flip() +
         theme(axis.text.x = element_text(angle = 0, vjust = 1 , hjust = 1), 
         axis.line.x = element_line(colour = "black"), 
         axis.title = element_text(size = 12), 
@@ -112,25 +134,13 @@ ggplot(college.join, mapping = aes(y = sharewomen*100, x = Major)) + geom_col(co
 #select(college.join, contains("women"))
 
 #share of women per major graph plot
- college.join$Major<- factor(college.join$Major,levels = college.join$Major[order(college.join$sharewomen)])
-
-
-ggplot(college.join, mapping = aes(x = sharewomen*100, y = Major)) + geom_point(color = "royalblue3") + labs(y = "Major", x = "Share of Women (%)", title = "Share of Women in Each Major") + theme(axis.text.x = element_text(angle = 0, vjust = 1 , hjust = 1), 
-        axis.line.x = element_line(colour = "black"), 
-        axis.title = element_text(size = 12), 
-        axis.text = element_text(size = 12), 
-        title = element_text(size = 15, color = "aquamarine3"),
-        axis.title.x = element_text(size = 14, colour = "mediumorchid3"),
-        axis.title.y = element_text(size = 14, colour = "mediumorchid3")
-        
-)
-
-#select(college.join, contains("major"))
-#Questions for Prof
-#What is interactive style
-#Are the way that the graphs are made/merged alright?
+college.join$Major<- factor(college.join$Major,levels = college.join$Major[order(college.join$sharewomen)])
 
 #to rejoin majors we want again in the new innerjoin = mutate(majors_new, recode('econ' = "economics"))
 
-#information on two axis https://rpubs.com/MarkusLoew/226759
 ```
+
+![Source: New York Federal Reserve & U.S. Census Bureau]
+
+
+###Conclusion
