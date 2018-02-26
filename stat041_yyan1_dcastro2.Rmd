@@ -28,7 +28,7 @@ theme_update(plot.title = element_text(hjust = 0.5))
 college <- data.frame(college_recent_grads)
 
 #Dalia's code works with this: ~/Labs/stat041_p1_grp14/labor-market-for-recent-college-grads.csv
-college_fed <- read_csv("~/Labs/stat041_p1_grp14/labor-market-for-recent-college-grads.csv")
+college_fed <- read_csv("~/stat041/labs/stat041_p1_grp14/labor-market-for-recent-college-grads.csv")
 college_fed <- college_fed[1:74,]
 overall_fed <- college_fed[74,]
 college_fed <- college_fed[-74,]
@@ -59,33 +59,14 @@ college.join$Major[college.join$Major == "General Social Sciences"] <- "Gen. Soc
 
 ###Introduction
 
- Here at Swarthmore College the sophomore plan, the short statement declaring a major/minor choice, for the class of 2020 was recently due. For some, this plan showcases their meticulously thought-out life decision to pursue a career in finance, pre-med, or the like. Meanwhile, for many previously undeclared and unapologetically curious, the clock has struck midnight. The time to choose a path in life has arrived. 
-
- For those who satisfy the latter group, making the decision at this time in their college career entails confronting the questions they have postponed until now. These questions include, but are not limited to: What do I want? Who am I and how can I get there? Will I be able to feed myself if I major in this or that? Do I really want to study a major which guarantees a high income? Considering that we cannot give a straightforward answer to the former two questions, the emphasis of this blogpost will tackle the last two questions, questions that all college students tend to ask themselves at some point in time. In order to analyze these questions, we have recruited the help from the US Census Bureau’s American Community Survey and the New York Federal Reserve’s data on recent college graduates.
+Here at Swarthmore College the sophomore plan, the short statement declaring a major/minor choice, for the class of 2020 was recently due. For some, this plan showcases their meticulously thought-out life decision to pursue a career in finance, pre-med, or the like. Meanwhile, for many previously undeclared and unapologetically curious, the clock has struck midnight. The time to choose a path in life has arrived. For those who satisfy the latter group, making the decision at this time in their college career entails confronting the questions they have postponed until now. These questions include: What do I want? Who am I and how can I get there? Will I be able to feed myself if I major in this or that? Do I really want to study a major which guarantees a high income? Considering that we cannot give a straightforward answer to the former two questions, the emphasis of this blogpost will tackle the last two questions, questions that all college students tend to ask themselves at some point in time. In order to examine college students' major selection and their ensuring careers, we have recruited help from the US Census Bureau’s American Community Survey and the New York Federal Reserve’s data on recent college graduates.
 
 ###Recent Graduate Unemployment
 
-In the graph above we look at graduation unemployment rate vs. wage growth. Wage growth is represented through the difference between entry level and mid-career wages. Just because unemployment rate for recent grads is low doesn’t mean that there will be small returns. For example, biology majors usually do not go directly into the workforce, leading to a relatively high unemployment rate. However, most of the biology majors end up becoming doctor after attending medical school. Similarly, architecture majors will need to wait for 5 years before they could obtain their practicing license from the NCARB.
-
-We want to highlight this finding because many people worry about their majors not leading to good employment right after graduation. However, the data here shows that wage growth should also be something that we should take into consideration. Studies have shown that parents have played a huge role in selecting universities and majors for their children (George-Jackson 2010). Before making decisions for their children, it would be important to look beyond the unemployment numbers.
+We ranked each major by its post-graduation unemployment rate, which represents the ratio of unemployed graduates over all graduates surveyed (both employed and unemployed). According to this ranking, Mass Media seems to be a major with the worst future prospect (no offense to Mass Media majors), while elementary teachers find jobs quite easily. We also recognize that career prospect is not just about your first job, so we also included wage growth that tracks the percentile change between entry level and mid-career wages. Interestingly, we found that graduates of low prospect majors (as measured by post-graduation unemployment rate) earn an income that banefits from higher growth over time (a whopping 90% for biology majors!), while majors that enjoy job security won't see much change in their income. There are exceptions to this rule. For example, Physics majors have a high wage growth for a relativly low unemployment rate (we speculate that this is due to their categorization method, which might deem research assistants as not employeed). However, the overall trend suggests that graduates who take risks in their early career might get compensated more over time, something that you certainly won't see on college websites!
 
 ```{r visualization, echo = FALSE}
-#Instruction source: https://rstudio-pubs-static.s3.amazonaws.com/7433_4537ea5073dc4162950abb715f513469.html
-college.join$Major<- factor(college.join$Major,levels = college.join$Major[order(college.join$`Unemployment Rate`)])
-
 par(mar=c(6,6,6,3)+.1)
-#ggplot(college.join) + 
-#  geom_col(mapping = aes(Major,`unemployment_rate`*100), alpha = 0.2, fill = "orange", color = FALSE, width = 0.8) +#  geom_col(mapping = aes(Major,`Unemployment Rate`), alpha = 0.6, fill = "midnightblue", color = FALSE, width = 0.8) + 
-#  coord_flip() + 
-#  labs(y = "Unemployment Rate (%)", x = "Undergraduate Major", title = "Unemployment Rate by College Major") +
-#  theme(axis.text.x = element_text(angle = 0, vjust = 1 , hjust = 1), 
-#        axis.line.x = element_line(colour = "grey80"), 
-#        axis.title = element_text(size = 10), 
-#       axis.text = element_text(size = 9), 
-#        title = element_text(size = 12)
-#  )
-
-#we decided not to include the above graph. 
 
 #Yichuan's Graph
 
@@ -93,16 +74,19 @@ par(mar=c(6,6,6,3)+.1)
 college.join$Major<- factor(college.join$Major,levels = college.join$Major[order(college.join$`Unemployment Rate`)])
 
 ggplot(college.join, aes(x = Major)) + 
-  geom_col(mapping = aes(y = (`Median Wage Mid-Career` - `Median Wage Early Career`)/`Median Wage Early Career`*100), alpha = 0.2, fill = "midnightblue", color = FALSE, width = 0.8) +
-  geom_col(mapping = aes(y = `Unemployment Rate`*5), alpha = 0.6, fill = "firebrick1", color = FALSE, width = 0.8) + 
+  geom_col(mapping = aes(y = (`Median Wage Mid-Career` - `Median Wage Early Career`)/`Median Wage Early Career`*100), alpha = 1.0, fill = "dodgerblue3", color = FALSE, width = 0.4) +
+  geom_col(mapping = aes(y = `Unemployment Rate`*5), alpha = 1.0, fill = "firebrick3", color = FALSE, width = 0.8) + 
   coord_flip() + 
-  labs(y = "Wage Growth (%)", x = "Undergraduate Major", title = "Unemployment vs. Wage Growth") +
+  labs(y = "Wage Growth (%)", x = "Undergraduate Major", title = "What majors lead to well-paying jobs?") +
   #used double axis labeling technique from https://rpubs.com/MarkusLoew/226759
-  scale_y_continuous(limits = c(0, 100), sec.axis = sec_axis(~.*.20, name = "Unemployment Rate [%]")) + 
-  theme(axis.text.x = element_text(angle = 0, vjust = 1 , hjust = 1), 
+  scale_y_continuous(limits = c(0, 100), sec.axis = sec_axis(~.*.20, name = "Unemployment Rate (%)")) +
+  theme(axis.text.x = element_text(angle = 0, vjust = 1 , hjust = 1, color = "dodgerblue3"), 
         axis.line.x = element_line(colour = "grey80"), 
-        axis.title = element_text(size = 14, color = "dodgerblue3"), 
-        axis.text = element_text(size = 9), 
+        axis.title = element_text(size = 14, color = "black"), 
+        axis.title.x.top = element_text(color = "firebrick3"), 
+        axis.text.x.top = element_text(color = "firebrick3"),
+        axis.title.x = element_text(color = "dodgerblue3"), 
+        axis.text = element_text(size = 8), 
         title = element_text(size = 15, color = "aquamarine3")
   )
 ```
@@ -121,11 +105,11 @@ Given that there are particular majors that seem to guarantee a good life overal
  college.join$Major<- factor(college.join$Major,levels = college.join$Major[order(college.join$sharewomen)])
 
 
-ggplot(college.join, mapping = aes( x = Major,y = `sharewomen`*100)) + geom_col( alpha = 0.6, fill = "slateblue") + labs( y = "Share of Women (%)", x = "Major", title = "Share of Women in Each Major") + coord_flip() +
+ggplot(college.join, mapping = aes( x = Major,y = `sharewomen`*100)) + geom_col( alpha = 0.6, fill = "slateblue") + labs( y = "Share of Women (%)", x = "Major", title = "Do majors face gender imbalance issues?") + coord_flip() +
         theme(axis.text.x = element_text(angle = 0, vjust = 1 , hjust = 1), 
         axis.line.x = element_line(colour = "black"), 
         axis.title = element_text(size = 12), 
-        axis.text = element_text(size = 12), 
+        axis.text = element_text(size = 8), 
         title = element_text(size = 15, color = "aquamarine3"),
         axis.title.x = element_text(size = 14, colour = "mediumorchid3"),
         axis.title.y = element_text(size = 14, colour = "mediumorchid3")
@@ -144,3 +128,5 @@ college.join$Major<- factor(college.join$Major,levels = college.join$Major[order
 
 
 ###Conclusion
+
+This blogpost is about the economic outcomes for different college majors, a subject that we admit may not be relatable to the entirety of the labor market. Indeed, not all of those who are employed studied at a college or university. However, it is important to understand that many high paying jobs in the market today may require a college degree. Although our data shows that there are high returns for some specific college majors, not all of them guarantee the wage trajectory over a lifetime. For example, a higher saturation of employable graduates may increase competition for said jobs and thus over a long-term reduce reduce wages as more and more people seek out the job and employers have more choice and control over the worker pay. That is to say - what the data says today, may not be the same in the future. Consider this before making your decision, as all pertinent decisions in life must be well thought-out!
