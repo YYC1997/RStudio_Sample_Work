@@ -1,5 +1,1 @@
-# stat041_p1_grp14
-
-#test 
-
-new stuff!
+Data Visualization & Data Wrangling Project for Stat041 Data Science Course at Swarthmore College
